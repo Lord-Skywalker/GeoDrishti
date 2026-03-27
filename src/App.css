@@ -1,0 +1,177 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  background-color: #0f172a;
+  color: #38bdf8;
+  padding: 1rem 2rem;
+  border-bottom: 2px solid #1e293b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.header p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.map-container {
+  flex-grow: 1; /* This tells the map to fill the rest of the screen */
+  width: 100%;
+}
+
+/* Floating Data Panel */
+.dashboard-body {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+}
+
+.data-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 380px;
+  background-color: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+  z-index: 1000; /* This forces the panel to sit ON TOP of the Leaflet map */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.data-panel h2 {
+  font-size: 1.2rem;
+  color: #38bdf8;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 0.5rem;
+}
+
+.data-panel p {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+}
+
+/* Make sure the map fills the new body container */
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Timeline Slider Styles */
+.timeline-container {
+  margin-top: 1.5rem;
+  border-top: 1px solid #334155;
+  padding-top: 1rem;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.timeline-header h3 {
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.year-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ef4444; /* Glowing Red */
+}
+
+/* Make the slider match our dark/red theme */
+input[type=range] {
+  width: 100%;
+  accent-color: #ef4444; 
+  cursor: pointer;
+}
+
+/* Floating Map Legend */
+.map-legend {
+  background: rgba(15, 23, 42, 0.9);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  color: white;
+  font-size: 12px;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.color-box {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+/* Metadata Styling */
+.metadata-box {
+  margin-top: 20px;
+  padding: 12px;
+  background: rgba(30, 41, 59, 0.5);
+  border-left: 3px solid #38bdf8;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1 -fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: rgba(15, 23, 42, 0.4);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  text-align: center;
+}
+
+.stat-card h4 {
+  font-size: 10px;
+  color: #94a3b8;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+
+.stat-card p {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #f8fafc;
+}
+
+.trend-up { color: #ef4444; font-size: 12px; }
+.trend-down { color: #22c55e; font-size: 12px; }
