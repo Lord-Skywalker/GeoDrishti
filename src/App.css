@@ -153,6 +153,12 @@ body {
   cursor: pointer;
 }
 
+/* 6. PUSH MAP CONTROLS UP */
+/* This stops the standard Leaflet map buttons from hiding behind your slider */
+.leaflet-bottom {
+  bottom: 100px !important;
+}
+
 /* --- MOBILE RESPONSIVENESS FIX --- */
 @media (max-width: 768px) {
   /* 1. Make the panel fit the phone screen instead of overflowing */
@@ -186,5 +192,10 @@ body {
   .floating-bottom-bar {
     bottom: 20px;
     padding: 10px 20px;
+  }
+
+  /* 5. Push Leaflet controls a bit higher on mobile */
+  .leaflet-bottom {
+    bottom: 90px !important;
   }
 }

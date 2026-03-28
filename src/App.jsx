@@ -68,9 +68,19 @@ function App() {
       {/* 1. MAP FILLS ENTIRE BACKGROUND */}
       <MapContainer center={majuliPosition} zoom={11} className="map-container" zoomControl={false}>
         <LayersControl position="bottomleft">
+          
           <LayersControl.BaseLayer checked name="Satellite Imagery">
             <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
           </LayersControl.BaseLayer>
+
+          {/* NEW: Standard Street Map */}
+          <LayersControl.BaseLayer name="Standard Map">
+            <TileLayer 
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+              attribution="&copy; OpenStreetMap contributors"
+            />
+          </LayersControl.BaseLayer>
+
         </LayersControl>
 
         {realErosionShapes && (
