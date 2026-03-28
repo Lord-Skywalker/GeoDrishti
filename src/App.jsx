@@ -4,6 +4,20 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import 'leaflet/dist/leaflet.css'; 
 import './App.css';
 
+// --- FIX FOR BROKEN MAP ICONS ---
+import L from 'leaflet';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+});
+// --------------------------------
+
 function App() {
   const [selectedYear, setSelectedYear] = useState(2022);
   const [erosionStats, setErosionStats] = useState([]);
@@ -19,9 +33,9 @@ function App() {
     { name: "Dakshinpat Satra", pos: [26.865, 94.295] }
   ];
 
-  // 1. Fetch Stats from Django
+  // 1. Fetch Stats from LIVE Django Render API
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/erosion-stats/')
+    fetch('https://geodrishti-backend.onrender.com/api/erosion-stats/')
       .then(res => res.json())
       .then(data => setErosionStats(data))
       .catch(err => console.error("Django offline"));
@@ -77,7 +91,7 @@ function App() {
             />
           )}
 
-          {/* NEW: Village/Landmark Markers */}
+          {/* Village/Landmark Markers */}
           {landmarks.map((place, idx) => (
             <Marker key={idx} position={place.pos}>
               <Popup>
@@ -101,7 +115,6 @@ function App() {
         </MapContainer>
 
         <div className="data-panel">
-          {/* UPDATED: Scientifically accurate terminology */}
           <div className="stats-grid">
             <div className="stat-card">
               <h4>Risk Area Detected</h4>
