@@ -57,7 +57,7 @@ body {
 .side-panel {
   position: absolute;
   top: 0;
-  right: 0; /* Change this to 'left: 0;' if you want it on the left side */
+  right: 0; 
   width: 400px;
   height: 100vh;
   background-color: rgba(15, 23, 42, 0.95);
@@ -84,6 +84,7 @@ body {
 .panel-content {
   padding: 20px;
   padding-top: 70px; /* Space for the toggle button */
+  padding-bottom: 120px; /* Space so the bottom slider doesn't block text */
 }
 
 /* 4. TOGGLE MENU BUTTON */
@@ -123,6 +124,35 @@ body {
 .trend-up { color: #ef4444; }
 .trend-down { color: #22c55e; }
 
+/* 5. FLOATING BOTTOM BAR (Year Slider) */
+.floating-bottom-bar {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1005; /* Keeps it above the map and the panel */
+  background: rgba(15, 23, 42, 0.9);
+  padding: 15px 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  border: 1px solid #334155;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  width: 400px;
+  max-width: 90vw; /* Ensures it shrinks perfectly on mobile */
+  text-align: center;
+}
+
+.floating-bottom-bar h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #38bdf8;
+}
+
+.year-slider {
+  width: 100%;
+  cursor: pointer;
+}
+
 /* --- MOBILE RESPONSIVENESS FIX --- */
 @media (max-width: 768px) {
   /* 1. Make the panel fit the phone screen instead of overflowing */
@@ -150,5 +180,11 @@ body {
   
   .floating-header p {
     font-size: 11px;
+  }
+
+  /* 4. Ensure bottom bar fits nicely on phone */
+  .floating-bottom-bar {
+    bottom: 20px;
+    padding: 10px 20px;
   }
 }

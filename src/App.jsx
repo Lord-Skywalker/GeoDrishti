@@ -23,7 +23,7 @@ function App() {
   const [erosionStats, setErosionStats] = useState([]);
   const [realErosionShapes, setRealErosionShapes] = useState(null);
   
-  // NEW: State to control the side panel
+  // State to control the side panel visibility
   const [isPanelOpen, setIsPanelOpen] = useState(true); 
 
   const majuliPosition = [26.95, 94.28];
@@ -65,7 +65,7 @@ function App() {
   return (
     <div className="dashboard-container">
       
-      {/* 1. MAP IS NOW THE FULL BACKGROUND */}
+      {/* 1. MAP FILLS ENTIRE BACKGROUND */}
       <MapContainer center={majuliPosition} zoom={11} className="map-container" zoomControl={false}>
         <LayersControl position="bottomleft">
           <LayersControl.BaseLayer checked name="Satellite Imagery">
@@ -94,7 +94,7 @@ function App() {
         <ScaleControl position="bottomleft" imperial={false} />
       </MapContainer>
 
-      {/* 2. FLOATING HEADER (Top Left) */}
+      {/* 2. FLOATING HEADER */}
       <div className="floating-header">
         <h1>GeoDrishti</h1>
         <p>NIT Silchar Research | Majuli Island</p>
@@ -108,7 +108,7 @@ function App() {
         {isPanelOpen ? '✕' : '☰'}
       </button>
 
-      {/* 4. FLOATING SIDE PANEL (Top Right, Scrollable) */}
+      {/* 4. FLOATING SIDE PANEL (Scrollable) */}
       <div className={`side-panel ${!isPanelOpen ? 'collapsed' : ''}`}>
         <div className="panel-content">
           
@@ -147,16 +147,6 @@ function App() {
               </ResponsiveContainer>
             </div>
 
-            <div className="timeline-container" style={{marginTop: '25px'}}>
-              <h3 style={{fontSize: '14px', marginBottom: '10px'}}>Year Selection: {selectedYear}</h3>
-              <input 
-                type="range" min="2018" max="2025" step="1" 
-                value={selectedYear} 
-                onChange={(e) => setSelectedYear(parseInt(e.target.value))} 
-                style={{width: '100%'}}
-              />
-            </div>
-
             <div className="metadata-box" style={{marginTop: '25px', fontSize: '12px', color: '#94a3b8', background: '#1e293b', padding: '15px', borderRadius: '8px'}}>
               <strong style={{color: 'white'}}>Methodology:</strong><br/><br/>
               • Model: Sentinel-1 (SAR) + Sentinel-2 (NDVI)<br/>
@@ -165,6 +155,17 @@ function App() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 5. FLOATING BOTTOM TIMELINE (Always Visible) */}
+      <div className="floating-bottom-bar">
+        <h3>Year Selection: {selectedYear}</h3>
+        <input 
+          type="range" min="2018" max="2025" step="1" 
+          value={selectedYear} 
+          onChange={(e) => setSelectedYear(parseInt(e.target.value))} 
+          className="year-slider"
+        />
       </div>
       
     </div>
