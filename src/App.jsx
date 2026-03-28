@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON, ImageOverlay, LayersControl, ScaleControl, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, ImageOverlay, LayersControl, ScaleControl, Marker, Popup, FeatureGroup } from 'react-leaflet';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import 'leaflet/dist/leaflet.css'; 
 import './App.css';
@@ -92,32 +92,36 @@ function App() {
             />
           </LayersControl.BaseLayer>
 
-          {/* DYNAMIC OVERLAYS */}
+          {/* OVERLAYS WRAPPED IN FEATURE GROUPS TO PREVENT UNCHECKING */}
           <LayersControl.Overlay checked name="High Erosion Risk (Red)">
-            {realErosionShapes && (
-              <GeoJSON 
-                key={`erosion-${selectedYear}`} 
-                data={realErosionShapes} 
-                style={erosionStyle}
-                onEachFeature={(f, l) => l.bindPopup(`Erosion Risk (${selectedYear})`)}
-              />
-            )}
+            <FeatureGroup>
+              {realErosionShapes && (
+                <GeoJSON 
+                  key={`erosion-${selectedYear}`} 
+                  data={realErosionShapes} 
+                  style={erosionStyle}
+                  onEachFeature={(f, l) => l.bindPopup(`Erosion Risk (${selectedYear})`)}
+                />
+              )}
+            </FeatureGroup>
           </LayersControl.Overlay>
 
           <LayersControl.Overlay name="Monsoon Flood Inundation (Blue)">
-            {floodShapes && (
-              <GeoJSON 
-                key={`flood-${selectedYear}`} 
-                data={floodShapes} 
-                style={floodStyle}
-                onEachFeature={(f, l) => l.bindPopup(`Flood Zone (${selectedYear})`)}
-              />
-            )}
+            <FeatureGroup>
+              {floodShapes && (
+                <GeoJSON 
+                  key={`flood-${selectedYear}`} 
+                  data={floodShapes} 
+                  style={floodStyle}
+                  onEachFeature={(f, l) => l.bindPopup(`Flood Zone (${selectedYear})`)}
+                />
+              )}
+            </FeatureGroup>
           </LayersControl.Overlay>
 
           <LayersControl.Overlay name="NDVI Vegetation Loss (Raster)">
             <ImageOverlay
-              url={`/ndvi_${selectedYear}.png`} /* Dynamically loads based on slider */
+              url={`/ndvi_${selectedYear}.png`} 
               bounds={majuliBounds}
               opacity={0.6}
               zIndex={10}
@@ -126,7 +130,7 @@ function App() {
 
           <LayersControl.Overlay name="DEM Slope Topography (Raster)">
             <ImageOverlay
-              url="/slope_map.png" /* Static file, never changes */
+              url="/slope_map.png" 
               bounds={majuliBounds}
               opacity={0.6}
               zIndex={9}
