@@ -24,13 +24,11 @@ function App() {
   
   // Geospatial Data States
   const [realErosionShapes, setRealErosionShapes] = useState(null);
-  const [floodShapes, setFloodShapes] = useState(null); // NEW: Flood Data
+  const [floodShapes, setFloodShapes] = useState(null); 
   
   const [isPanelOpen, setIsPanelOpen] = useState(true); 
 
   const majuliPosition = [26.95, 94.28];
-  
-  // Bounding box for Majuli (Used to stretch the NDVI and Slope PNG images accurately)
   const majuliBounds = [[26.80, 93.90], [27.15, 94.60]]; 
 
   const landmarks = [
@@ -48,7 +46,7 @@ function App() {
       .catch(err => console.error("Django offline"));
   }, []);
 
-  // Fetch Spatial Data based on Year
+  // Fetch Spatial Data dynamically based on the Slider (selectedYear)
   useEffect(() => {
     // 1. Fetch Erosion
     fetch(`/erosion_${selectedYear}.json`)
@@ -56,11 +54,11 @@ function App() {
       .then(data => setRealErosionShapes(data))
       .catch(() => setRealErosionShapes(null));
 
-    // 2. Fetch Flood Data (Assuming you will add flood_2022.json to your public folder later)
+    // 2. Fetch Flood Data
     fetch(`/flood_${selectedYear}.json`)
       .then(res => res.json())
       .then(data => setFloodShapes(data))
-      .catch(() => setFloodShapes(null)); // Fails silently if file doesn't exist yet
+      .catch(() => setFloodShapes(null)); 
   }, [selectedYear]);
 
   const currentData = erosionStats.find(d => d.year === selectedYear);
@@ -74,9 +72,8 @@ function App() {
 
   const change = calculateChange();
   
-  // Styling for the different map layers
   const erosionStyle = { color: "#ff3333", weight: 1.5, fillColor: "#ff0000", fillOpacity: 0.5 };
-  const floodStyle = { color: "#3b82f6", weight: 1.5, fillColor: "#2563eb", fillOpacity: 0.4 }; // Blue for floods
+  const floodStyle = { color: "#3b82f6", weight: 1.5, fillColor: "#2563eb", fillOpacity: 0.4 }; 
 
   return (
     <div className="dashboard-container">
@@ -84,7 +81,6 @@ function App() {
       <MapContainer center={majuliPosition} zoom={11} className="map-container" zoomControl={false}>
         <LayersControl position="bottomleft">
           
-          {/* BASE MAPS */}
           <LayersControl.BaseLayer checked name="Satellite Imagery">
             <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
           </LayersControl.BaseLayer>
@@ -96,7 +92,7 @@ function App() {
             />
           </LayersControl.BaseLayer>
 
-          {/* OVERLAYS (Toggleable Layers) */}
+          {/* DYNAMIC OVERLAYS */}
           <LayersControl.Overlay checked name="High Erosion Risk (Red)">
             {realErosionShapes && (
               <GeoJSON 
@@ -120,9 +116,8 @@ function App() {
           </LayersControl.Overlay>
 
           <LayersControl.Overlay name="NDVI Vegetation Loss (Raster)">
-            {/* You will need to save an image named ndvi_map.png in your public folder */}
             <ImageOverlay
-              url="/ndvi_map.png"
+              url={`/ndvi_${selectedYear}.png`} /* Dynamically loads based on slider */
               bounds={majuliBounds}
               opacity={0.6}
               zIndex={10}
@@ -130,9 +125,8 @@ function App() {
           </LayersControl.Overlay>
 
           <LayersControl.Overlay name="DEM Slope Topography (Raster)">
-            {/* You will need to save an image named slope_map.png in your public folder */}
             <ImageOverlay
-              url="/slope_map.png"
+              url="/slope_map.png" /* Static file, never changes */
               bounds={majuliBounds}
               opacity={0.6}
               zIndex={9}
