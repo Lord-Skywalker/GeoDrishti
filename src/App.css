@@ -122,3 +122,33 @@ body {
 .stat-card p { margin: 0; font-size: 24px; font-weight: bold; }
 .trend-up { color: #ef4444; }
 .trend-down { color: #22c55e; }
+
+/* --- MOBILE RESPONSIVENESS FIX --- */
+@media (max-width: 768px) {
+  /* 1. Make the panel fit the phone screen instead of overflowing */
+  .side-panel {
+    width: 100vw;
+  }
+  
+  /* 2. Stop the button from flying off the screen! Keep it on top of the panel */
+  .side-panel:not(.collapsed) ~ .panel-toggle-btn,
+  .panel-toggle-btn.panel-open {
+    right: 20px; 
+  }
+  
+  /* 3. Shrink the GeoDrishti title slightly so it doesn't bump into the button */
+  .floating-header {
+    top: 15px;
+    left: 15px;
+    padding: 10px 15px;
+    max-width: 65vw;
+  }
+  
+  .floating-header h1 {
+    font-size: 20px;
+  }
+  
+  .floating-header p {
+    font-size: 11px;
+  }
+}
