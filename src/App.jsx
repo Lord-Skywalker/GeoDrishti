@@ -22,10 +22,12 @@ function App() {
   const [selectedYear, setSelectedYear] = useState(2022);
   const [erosionStats, setErosionStats] = useState([]);
   const [realErosionShapes, setRealErosionShapes] = useState(null);
+  
+  // NEW: State to control the side panel
+  const [isPanelOpen, setIsPanelOpen] = useState(true); 
 
   const majuliPosition = [26.95, 94.28];
 
-  // Important Landmarks in Majuli to give the map context
   const landmarks = [
     { name: "Kamalabari", pos: [26.931, 94.215] },
     { name: "Garmur", pos: [26.963, 94.225] },
@@ -33,7 +35,6 @@ function App() {
     { name: "Dakshinpat Satra", pos: [26.865, 94.295] }
   ];
 
-  // 1. Fetch Stats from LIVE Django Render API
   useEffect(() => {
     fetch('https://geodrishti-backend.onrender.com/api/erosion-stats/')
       .then(res => res.json())
@@ -41,7 +42,6 @@ function App() {
       .catch(err => console.error("Django offline"));
   }, []);
 
-  // 2. Fetch Map Data based on Slider
   useEffect(() => {
     const fileName = `/erosion_${selectedYear}.json`;
     fetch(fileName)
@@ -50,7 +50,6 @@ function App() {
       .catch(() => setRealErosionShapes(null));
   }, [selectedYear]);
 
-  // --- ANALYTICS LOGIC ---
   const currentData = erosionStats.find(d => d.year === selectedYear);
   const prevData = erosionStats.find(d => d.year === selectedYear - 1);
 
@@ -65,56 +64,54 @@ function App() {
 
   return (
     <div className="dashboard-container">
-      <header className="header">
-        <div className="header-content">
-          <h1>Project Bhoomi</h1>
-          <span className="badge">NIT Silchar Research</span>
-        </div>
-        <p>Interactive Erosion Dynamics Dashboard | Majuli Island</p>
-      </header>
+      
+      {/* 1. MAP IS NOW THE FULL BACKGROUND */}
+      <MapContainer center={majuliPosition} zoom={11} className="map-container" zoomControl={false}>
+        <LayersControl position="bottomleft">
+          <LayersControl.BaseLayer checked name="Satellite Imagery">
+            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+          </LayersControl.BaseLayer>
+        </LayersControl>
 
-      <div className="dashboard-body">
-        <MapContainer center={majuliPosition} zoom={11} className="map-container">
-          <LayersControl position="topleft">
-            <LayersControl.BaseLayer checked name="Satellite Imagery">
-              <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
-            </LayersControl.BaseLayer>
-          </LayersControl>
+        {realErosionShapes && (
+          <GeoJSON 
+            key={selectedYear} 
+            data={realErosionShapes} 
+            style={erosionStyle}
+            onEachFeature={(f, l) => l.bindPopup(`Risk Zone (${selectedYear})`)}
+          />
+        )}
 
-          {/* GEE Erosion Risk Clusters */}
-          {realErosionShapes && (
-            <GeoJSON 
-              key={selectedYear} 
-              data={realErosionShapes} 
-              style={erosionStyle}
-              onEachFeature={(f, l) => l.bindPopup(`Risk Zone (${selectedYear})`)}
-            />
-          )}
+        {landmarks.map((place, idx) => (
+          <Marker key={idx} position={place.pos}>
+            <Popup>
+              <strong>{place.name}</strong><br/>
+              Majuli, Assam
+            </Popup>
+          </Marker>
+        ))}
 
-          {/* Village/Landmark Markers */}
-          {landmarks.map((place, idx) => (
-            <Marker key={idx} position={place.pos}>
-              <Popup>
-                <strong>{place.name}</strong><br/>
-                Majuli, Assam
-              </Popup>
-            </Marker>
-          ))}
+        <ScaleControl position="bottomleft" imperial={false} />
+      </MapContainer>
 
-          <ScaleControl position="bottomleft" imperial={false} />
+      {/* 2. FLOATING HEADER (Top Left) */}
+      <div className="floating-header">
+        <h1>GeoDrishti</h1>
+        <p>NIT Silchar Research | Majuli Island</p>
+      </div>
 
-          <div className="leaflet-bottom leaflet-right">
-            <div className="leaflet-control map-legend">
-              <h4 style={{margin: '0 0 8px 0'}}>Map Legend</h4>
-              <div className="legend-item">
-                <div className="color-box" style={{backgroundColor: '#ff0000', opacity: 0.6}}></div>
-                <span>High Erosion Risk ({selectedYear})</span>
-              </div>
-            </div>
-          </div>
-        </MapContainer>
+      {/* 3. TOGGLE BUTTON FOR PANEL */}
+      <button 
+        className={`panel-toggle-btn ${isPanelOpen ? 'panel-open' : ''}`}
+        onClick={() => setIsPanelOpen(!isPanelOpen)}
+      >
+        {isPanelOpen ? '✕' : '☰'}
+      </button>
 
-        <div className="data-panel">
+      {/* 4. FLOATING SIDE PANEL (Top Right, Scrollable) */}
+      <div className={`side-panel ${!isPanelOpen ? 'collapsed' : ''}`}>
+        <div className="panel-content">
+          
           <div className="stats-grid">
             <div className="stat-card">
               <h4>Risk Area Detected</h4>
@@ -136,8 +133,8 @@ function App() {
             </div>
           </div>
 
-          <div className="panel-card">
-            <h2>Temporal Trends</h2>
+          <div className="panel-card" style={{marginTop: '20px'}}>
+            <h2 style={{fontSize: '18px', marginBottom: '10px'}}>Temporal Trends</h2>
             <div style={{ width: '100%', height: 180 }}>
               <ResponsiveContainer>
                 <AreaChart data={erosionStats}>
@@ -150,17 +147,18 @@ function App() {
               </ResponsiveContainer>
             </div>
 
-            <div className="timeline-container">
-              <h3>Year Selection: {selectedYear}</h3>
+            <div className="timeline-container" style={{marginTop: '25px'}}>
+              <h3 style={{fontSize: '14px', marginBottom: '10px'}}>Year Selection: {selectedYear}</h3>
               <input 
                 type="range" min="2018" max="2025" step="1" 
                 value={selectedYear} 
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))} 
+                style={{width: '100%'}}
               />
             </div>
 
-            <div className="metadata-box">
-              <strong>Methodology:</strong><br/>
+            <div className="metadata-box" style={{marginTop: '25px', fontSize: '12px', color: '#94a3b8', background: '#1e293b', padding: '15px', borderRadius: '8px'}}>
+              <strong style={{color: 'white'}}>Methodology:</strong><br/><br/>
               • Model: Sentinel-1 (SAR) + Sentinel-2 (NDVI)<br/>
               • Processing: Google Earth Engine (GEE)<br/>
               • Campus: NIT Silchar, Assam
@@ -168,6 +166,7 @@ function App() {
           </div>
         </div>
       </div>
+      
     </div>
   );
 }
