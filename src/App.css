@@ -188,12 +188,12 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* 8. MAP LEGEND (NUCLEAR OPTION FIX) */
+/* 8. MAP LEGEND (MOVED TO TOP LEFT TO AVOID MAP CONTROLS) */
 .map-legend {
   position: absolute;
-  bottom: 140px; 
+  top: 130px; /* Parks it right beneath the floating header */
   left: 20px;
-  z-index: 9999 !important; /* Forces it above absolutely everything */
+  z-index: 9999 !important; /* Forces it above everything */
   background: rgba(15, 23, 42, 0.9);
   padding: 15px;
   border-radius: 8px;
@@ -260,6 +260,7 @@ body {
   color: #94a3b8;
 }
 
+
 /* --- MOBILE RESPONSIVENESS FIX --- */
 @media (max-width: 768px) {
   /* 1. Make the panel fit the phone screen instead of overflowing */
@@ -300,13 +301,12 @@ body {
     bottom: 90px !important;
   }
 
-  /* 6. Move legend out of the way on small screens and force z-index */
+  /* 6. Move legend to the top on mobile so it doesn't overlap controls */
   .map-legend {
-    bottom: 110px;
-    left: 10px;
+    top: 90px;
+    left: 15px;
     width: 180px;
     padding: 10px;
     font-size: 11px;
-    z-index: 9999 !important;
   }
 }
