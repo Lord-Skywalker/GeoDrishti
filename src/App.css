@@ -188,12 +188,12 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* 8. MAP LEGEND */
+/* 8. MAP LEGEND (NUCLEAR OPTION FIX) */
 .map-legend {
   position: absolute;
-  bottom: 120px; /* Sits right above the Leaflet layer controls */
+  bottom: 140px; 
   left: 20px;
-  z-index: 1000;
+  z-index: 9999 !important; /* Forces it above absolutely everything */
   background: rgba(15, 23, 42, 0.9);
   padding: 15px;
   border-radius: 8px;
@@ -260,7 +260,6 @@ body {
   color: #94a3b8;
 }
 
-
 /* --- MOBILE RESPONSIVENESS FIX --- */
 @media (max-width: 768px) {
   /* 1. Make the panel fit the phone screen instead of overflowing */
@@ -301,12 +300,13 @@ body {
     bottom: 90px !important;
   }
 
-  /* 6. Move legend out of the way on small screens */
+  /* 6. Move legend out of the way on small screens and force z-index */
   .map-legend {
     bottom: 110px;
     left: 10px;
     width: 180px;
     padding: 10px;
     font-size: 11px;
+    z-index: 9999 !important;
   }
 }

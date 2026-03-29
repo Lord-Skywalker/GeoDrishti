@@ -132,7 +132,7 @@ function App() {
         <p>NIT Silchar Research | Majuli Island</p>
       </div>
 
-      {/* FLOATING MAP LEGEND */}
+      {/* FLOATING MAP LEGEND (This is what was missing!) */}
       <div className="map-legend">
         <h4>Map Legend</h4>
         
@@ -160,7 +160,7 @@ function App() {
           <div className="gradient-bar slope-gradient"></div>
           <div className="gradient-labels">
             <span>Flat (0°)</span>
-            <span>Steep (>10°)</span>
+            <span>Steep (&gt;10°)</span>
           </div>
         </div>
       </div>
