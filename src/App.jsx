@@ -21,6 +21,7 @@ L.Icon.Default.mergeOptions({
 function App() {
   const [selectedYear, setSelectedYear] = useState(2022);
   const [erosionStats, setErosionStats] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // NEW: Loading state
   
   // Geospatial Data States
   const [realErosionShapes, setRealErosionShapes] = useState(null);
@@ -38,23 +39,27 @@ function App() {
     { name: "Dakshinpat Satra", pos: [26.865, 94.295] }
   ];
 
-  // Fetch Stats
+  // Fetch Stats (With Loading State)
   useEffect(() => {
     fetch('https://geodrishti-backend.onrender.com/api/erosion-stats/')
       .then(res => res.json())
-      .then(data => setErosionStats(data))
-      .catch(err => console.error("Django offline"));
+      .then(data => {
+        setErosionStats(data);
+        setIsLoading(false); // Turn off loader when data arrives
+      })
+      .catch(err => {
+        console.error("Django offline");
+        setIsLoading(false); // Turn off loader even if it fails so UI doesn't hang forever
+      });
   }, []);
 
-  // Fetch Spatial Data dynamically based on the Slider (selectedYear)
+  // Fetch Spatial Data dynamically based on the Slider
   useEffect(() => {
-    // 1. Fetch Erosion
     fetch(`/erosion_${selectedYear}.json`)
       .then(res => res.json())
       .then(data => setRealErosionShapes(data))
       .catch(() => setRealErosionShapes(null));
 
-    // 2. Fetch Flood Data
     fetch(`/flood_${selectedYear}.json`)
       .then(res => res.json())
       .then(data => setFloodShapes(data))
@@ -92,7 +97,7 @@ function App() {
             />
           </LayersControl.BaseLayer>
 
-          {/* OVERLAYS WRAPPED IN FEATURE GROUPS TO PREVENT UNCHECKING */}
+          {/* OVERLAYS WRAPPED IN FEATURE GROUPS */}
           <LayersControl.Overlay checked name="High Erosion Risk (Red)">
             <FeatureGroup>
               {realErosionShapes && (
@@ -120,21 +125,11 @@ function App() {
           </LayersControl.Overlay>
 
           <LayersControl.Overlay name="NDVI Vegetation Loss (Raster)">
-            <ImageOverlay
-              url={`/ndvi_${selectedYear}.png`} 
-              bounds={majuliBounds}
-              opacity={0.6}
-              zIndex={10}
-            />
+            <ImageOverlay url={`/ndvi_${selectedYear}.png`} bounds={majuliBounds} opacity={0.6} zIndex={10} />
           </LayersControl.Overlay>
 
           <LayersControl.Overlay name="DEM Slope Topography (Raster)">
-            <ImageOverlay
-              url="/slope_map.png" 
-              bounds={majuliBounds}
-              opacity={0.6}
-              zIndex={9}
-            />
+            <ImageOverlay url="/slope_map.png" bounds={majuliBounds} opacity={0.6} zIndex={9} />
           </LayersControl.Overlay>
 
         </LayersControl>
@@ -162,43 +157,57 @@ function App() {
       {/* FLOATING SIDE PANEL */}
       <div className={`side-panel ${!isPanelOpen ? 'collapsed' : ''}`}>
         <div className="panel-content">
-          <div className="stats-grid">
-            <div className="stat-card">
-              <h4>Risk Area Detected</h4>
-              <p>{currentData ? `${currentData.hectares.toLocaleString()} Ha` : 'N/A'}</p>
+          
+          {/* THE LOADER CONDITION */}
+          {isLoading ? (
+            <div className="loader-container">
+              <div className="spinner"></div>
+              <p style={{ fontWeight: 'bold', color: '#38bdf8' }}>🛰️ Fetching Satellite Data...</p>
+              <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>Waking up secure backend server. This may take up to 50 seconds.</p>
             </div>
-            <div className="stat-card">
-              <h4>Annual Change</h4>
-              <p className={change > 0 ? 'trend-up' : 'trend-down'}>{change ? `${change > 0 ? '↑' : '↓'} ${Math.abs(change)}%` : '--'}</p>
-            </div>
-            <div className="stat-card">
-              <h4>Status</h4>
-              <p style={{ color: currentData?.hectares > 15000 ? '#ef4444' : '#fbbf24' }}>{currentData?.hectares > 15000 ? 'CRITICAL' : 'HIGH'}</p>
-            </div>
-          </div>
+          ) : (
+            <>
+              {/* STATS GRID & TRENDS (Only shows when data arrives) */}
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <h4>Risk Area Detected</h4>
+                  <p>{currentData ? `${currentData.hectares.toLocaleString()} Ha` : 'N/A'}</p>
+                </div>
+                <div className="stat-card">
+                  <h4>Annual Change</h4>
+                  <p className={change > 0 ? 'trend-up' : 'trend-down'}>{change ? `${change > 0 ? '↑' : '↓'} ${Math.abs(change)}%` : '--'}</p>
+                </div>
+                <div className="stat-card">
+                  <h4>Status</h4>
+                  <p style={{ color: currentData?.hectares > 15000 ? '#ef4444' : '#fbbf24' }}>{currentData?.hectares > 15000 ? 'CRITICAL' : 'HIGH'}</p>
+                </div>
+              </div>
 
-          <div className="panel-card" style={{marginTop: '20px'}}>
-            <h2 style={{fontSize: '18px', marginBottom: '10px'}}>Temporal Trends</h2>
-            <div style={{ width: '100%', height: 180 }}>
-              <ResponsiveContainer>
-                <AreaChart data={erosionStats}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                  <XAxis dataKey="year" stroke="#94a3b8" fontSize={10}/>
-                  <YAxis stroke="#94a3b8" fontSize={10}/>
-                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px' }} />
-                  <Area type="monotone" dataKey="hectares" stroke="#ef4444" fill="#ef4444" fillOpacity={0.2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+              <div className="panel-card" style={{marginTop: '20px'}}>
+                <h2 style={{fontSize: '18px', marginBottom: '10px'}}>Temporal Trends</h2>
+                <div style={{ width: '100%', height: 180 }}>
+                  <ResponsiveContainer>
+                    <AreaChart data={erosionStats}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                      <XAxis dataKey="year" stroke="#94a3b8" fontSize={10}/>
+                      <YAxis stroke="#94a3b8" fontSize={10}/>
+                      <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px' }} />
+                      <Area type="monotone" dataKey="hectares" stroke="#ef4444" fill="#ef4444" fillOpacity={0.2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
 
-            <div className="metadata-box" style={{marginTop: '25px', fontSize: '12px', color: '#94a3b8', background: '#1e293b', padding: '15px', borderRadius: '8px'}}>
-              <strong style={{color: 'white'}}>Data Layers:</strong><br/><br/>
-              • Erosion Risk: Sentinel-1 & 2 (GeoJSON)<br/>
-              • Flood Extent: Sentinel-1 SAR (GeoJSON)<br/>
-              • Vegetation (NDVI): Sentinel-2 (Raster)<br/>
-              • Slope (DEM): SRTM 30m (Raster)
-            </div>
-          </div>
+                <div className="metadata-box" style={{marginTop: '25px', fontSize: '12px', color: '#94a3b8', background: '#1e293b', padding: '15px', borderRadius: '8px'}}>
+                  <strong style={{color: 'white'}}>Data Layers:</strong><br/><br/>
+                  • Erosion Risk: Sentinel-1 & 2 (GeoJSON)<br/>
+                  • Flood Extent: Sentinel-1 SAR (GeoJSON)<br/>
+                  • Vegetation (NDVI): Sentinel-2 (Raster)<br/>
+                  • Slope (DEM): SRTM 30m (Raster)
+                </div>
+              </div>
+            </>
+          )}
+
         </div>
       </div>
 
