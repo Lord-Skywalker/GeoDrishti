@@ -61,7 +61,7 @@ body {
   width: 400px;
   height: 100vh;
   background-color: rgba(15, 23, 42, 0.95);
-  z-index: 1000;
+  z-index: 1005; /* HIGHEST LAYER: Covers everything when open on mobile */
   display: flex;
   flex-direction: column;
   box-shadow: -5px 0 25px rgba(0, 0, 0, 0.6);
@@ -92,7 +92,7 @@ body {
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 1001;
+  z-index: 1006; /* Above the panel so you can always click it */
   background-color: #1e293b;
   border: 1px solid #334155;
   color: white;
@@ -130,7 +130,7 @@ body {
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1005; /* Keeps it above the map and the panel */
+  z-index: 1006; /* High layer so it sits above the side panel padding */
   background: rgba(15, 23, 42, 0.9);
   padding: 15px 30px;
   border-radius: 12px;
@@ -188,12 +188,12 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* 8. MAP LEGEND (MOVED TO TOP LEFT TO AVOID MAP CONTROLS) */
+/* 8. MAP LEGEND (Locked to Left Side) */
 .map-legend {
   position: absolute;
-  top: 130px; /* Parks it right beneath the floating header */
+  bottom: 140px; 
   left: 20px;
-  z-index: 9999 !important; /* Forces it above everything */
+  z-index: 1000; /* LAYERED BELOW SIDE PANEL. Panel will hide it on mobile! */
   background: rgba(15, 23, 42, 0.9);
   padding: 15px;
   border-radius: 8px;
@@ -260,7 +260,6 @@ body {
   color: #94a3b8;
 }
 
-
 /* --- MOBILE RESPONSIVENESS FIX --- */
 @media (max-width: 768px) {
   /* 1. Make the panel fit the phone screen instead of overflowing */
@@ -301,10 +300,10 @@ body {
     bottom: 90px !important;
   }
 
-  /* 6. Move legend to the top on mobile so it doesn't overlap controls */
+  /* 6. Mobile Legend Fix: Sit on the left, but cleanly beneath the Side Panel layer */
   .map-legend {
-    top: 90px;
-    left: 15px;
+    bottom: 110px;
+    left: 10px;
     width: 180px;
     padding: 10px;
     font-size: 11px;

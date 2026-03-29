@@ -132,7 +132,7 @@ function App() {
         <p>NIT Silchar Research | Majuli Island</p>
       </div>
 
-      {/* FLOATING MAP LEGEND (This is what was missing!) */}
+      {/* STATIC MAP LEGEND (Locked to the Left) */}
       <div className="map-legend">
         <h4>Map Legend</h4>
         
