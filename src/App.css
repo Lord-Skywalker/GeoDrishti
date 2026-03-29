@@ -188,6 +188,79 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+/* 8. MAP LEGEND */
+.map-legend {
+  position: absolute;
+  bottom: 120px; /* Sits right above the Leaflet layer controls */
+  left: 20px;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  border: 1px solid #334155;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  width: 200px;
+}
+
+.map-legend h4 {
+  margin: 0 0 10px 0;
+  color: #38bdf8;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gradient-block {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+
+.gradient-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 3px;
+  margin: 5px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* These colors perfectly match your Google Earth Engine visualizer parameters! */
+.ndvi-gradient {
+  background: linear-gradient(to right, #ffffff, #ce7e45, #fcd163, #66a000, #004c00);
+}
+
+.slope-gradient {
+  background: linear-gradient(to right, #ffffff, #ffeaa7, #fab1a0, #ff7675, #d63031);
+}
+
+.gradient-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+
 /* --- MOBILE RESPONSIVENESS FIX --- */
 @media (max-width: 768px) {
   /* 1. Make the panel fit the phone screen instead of overflowing */
@@ -226,5 +299,14 @@ body {
   /* 5. Push Leaflet controls a bit higher on mobile */
   .leaflet-bottom {
     bottom: 90px !important;
+  }
+
+  /* 6. Move legend out of the way on small screens */
+  .map-legend {
+    bottom: 110px;
+    left: 10px;
+    width: 180px;
+    padding: 10px;
+    font-size: 11px;
   }
 }

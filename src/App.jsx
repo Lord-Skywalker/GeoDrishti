@@ -21,9 +21,8 @@ L.Icon.Default.mergeOptions({
 function App() {
   const [selectedYear, setSelectedYear] = useState(2022);
   const [erosionStats, setErosionStats] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // NEW: Loading state
+  const [isLoading, setIsLoading] = useState(true);
   
-  // Geospatial Data States
   const [realErosionShapes, setRealErosionShapes] = useState(null);
   const [floodShapes, setFloodShapes] = useState(null); 
   
@@ -39,21 +38,19 @@ function App() {
     { name: "Dakshinpat Satra", pos: [26.865, 94.295] }
   ];
 
-  // Fetch Stats (With Loading State)
   useEffect(() => {
     fetch('https://geodrishti-backend.onrender.com/api/erosion-stats/')
       .then(res => res.json())
       .then(data => {
         setErosionStats(data);
-        setIsLoading(false); // Turn off loader when data arrives
+        setIsLoading(false);
       })
       .catch(err => {
         console.error("Django offline");
-        setIsLoading(false); // Turn off loader even if it fails so UI doesn't hang forever
+        setIsLoading(false);
       });
   }, []);
 
-  // Fetch Spatial Data dynamically based on the Slider
   useEffect(() => {
     fetch(`/erosion_${selectedYear}.json`)
       .then(res => res.json())
@@ -91,22 +88,13 @@ function App() {
           </LayersControl.BaseLayer>
 
           <LayersControl.BaseLayer name="Standard Map">
-            <TileLayer 
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-              attribution="&copy; OpenStreetMap contributors"
-            />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
           </LayersControl.BaseLayer>
 
-          {/* OVERLAYS WRAPPED IN FEATURE GROUPS */}
           <LayersControl.Overlay checked name="High Erosion Risk (Red)">
             <FeatureGroup>
               {realErosionShapes && (
-                <GeoJSON 
-                  key={`erosion-${selectedYear}`} 
-                  data={realErosionShapes} 
-                  style={erosionStyle}
-                  onEachFeature={(f, l) => l.bindPopup(`Erosion Risk (${selectedYear})`)}
-                />
+                <GeoJSON key={`erosion-${selectedYear}`} data={realErosionShapes} style={erosionStyle} onEachFeature={(f, l) => l.bindPopup(`Erosion Risk (${selectedYear})`)} />
               )}
             </FeatureGroup>
           </LayersControl.Overlay>
@@ -114,12 +102,7 @@ function App() {
           <LayersControl.Overlay name="Monsoon Flood Inundation (Blue)">
             <FeatureGroup>
               {floodShapes && (
-                <GeoJSON 
-                  key={`flood-${selectedYear}`} 
-                  data={floodShapes} 
-                  style={floodStyle}
-                  onEachFeature={(f, l) => l.bindPopup(`Flood Zone (${selectedYear})`)}
-                />
+                <GeoJSON key={`flood-${selectedYear}`} data={floodShapes} style={floodStyle} onEachFeature={(f, l) => l.bindPopup(`Flood Zone (${selectedYear})`)} />
               )}
             </FeatureGroup>
           </LayersControl.Overlay>
@@ -149,16 +132,46 @@ function App() {
         <p>NIT Silchar Research | Majuli Island</p>
       </div>
 
-      {/* TOGGLE BUTTON FOR PANEL */}
+      {/* FLOATING MAP LEGEND */}
+      <div className="map-legend">
+        <h4>Map Legend</h4>
+        
+        <div className="legend-item">
+          <span className="legend-color" style={{ background: '#ff0000', opacity: 0.5 }}></span>
+          <span>Erosion Risk Area</span>
+        </div>
+        
+        <div className="legend-item">
+          <span className="legend-color" style={{ background: '#2563eb', opacity: 0.4 }}></span>
+          <span>Monsoon Flood Zone</span>
+        </div>
+
+        <div className="legend-item gradient-block">
+          <span>NDVI (Vegetation Cover)</span>
+          <div className="gradient-bar ndvi-gradient"></div>
+          <div className="gradient-labels">
+            <span>Water/Bare</span>
+            <span>Dense Forest</span>
+          </div>
+        </div>
+
+        <div className="legend-item gradient-block">
+          <span>Terrain Slope (DEM)</span>
+          <div className="gradient-bar slope-gradient"></div>
+          <div className="gradient-labels">
+            <span>Flat (0°)</span>
+            <span>Steep (>10°)</span>
+          </div>
+        </div>
+      </div>
+
+      {/* TOGGLE BUTTON & SIDE PANEL */}
       <button className={`panel-toggle-btn ${isPanelOpen ? 'panel-open' : ''}`} onClick={() => setIsPanelOpen(!isPanelOpen)}>
         {isPanelOpen ? '✕' : '☰'}
       </button>
 
-      {/* FLOATING SIDE PANEL */}
       <div className={`side-panel ${!isPanelOpen ? 'collapsed' : ''}`}>
         <div className="panel-content">
-          
-          {/* THE LOADER CONDITION */}
           {isLoading ? (
             <div className="loader-container">
               <div className="spinner"></div>
@@ -167,7 +180,6 @@ function App() {
             </div>
           ) : (
             <>
-              {/* STATS GRID & TRENDS (Only shows when data arrives) */}
               <div className="stats-grid">
                 <div className="stat-card">
                   <h4>Risk Area Detected</h4>
@@ -207,7 +219,6 @@ function App() {
               </div>
             </>
           )}
-
         </div>
       </div>
 
