@@ -27,6 +27,7 @@ function App() {
   const [floodShapes, setFloodShapes] = useState(null); 
   
   const [isPanelOpen, setIsPanelOpen] = useState(true); 
+  const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false); // NEW: Dropdown State
 
   const majuliPosition = [26.95, 94.28];
   const majuliBounds = [[26.80, 93.90], [27.15, 94.60]]; 
@@ -132,7 +133,7 @@ function App() {
         <p>NIT Silchar Research | Majuli Island</p>
       </div>
 
-      {/* STATIC MAP LEGEND (Locked to the Left) */}
+      {/* STATIC MAP LEGEND */}
       <div className="map-legend">
         <h4>Map Legend</h4>
         
@@ -165,8 +166,29 @@ function App() {
         </div>
       </div>
 
+      {/* DOWNLOAD MENU (Only visible when panel is open) */}
+      {isPanelOpen && (
+        <div className="download-container">
+          <button className="download-btn" onClick={() => setIsDownloadMenuOpen(!isDownloadMenuOpen)}>
+            📥 Timelapses
+          </button>
+          
+          {isDownloadMenuOpen && (
+            <div className="download-dropdown">
+              <p>Download 2018-2025 (.gif)</p>
+              <a href="/timelapse_ndvi.gif" download>🌿 NDVI Evolution</a>
+              <a href="/timelapse_flood.gif" download>🌊 Flood Patterns</a>
+              <a href="/timelapse_erosion.gif" download>⚠️ Erosion Extent</a>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* TOGGLE BUTTON & SIDE PANEL */}
-      <button className={`panel-toggle-btn ${isPanelOpen ? 'panel-open' : ''}`} onClick={() => setIsPanelOpen(!isPanelOpen)}>
+      <button className={`panel-toggle-btn ${isPanelOpen ? 'panel-open' : ''}`} onClick={() => {
+        setIsPanelOpen(!isPanelOpen);
+        setIsDownloadMenuOpen(false); // Close dropdown if panel closes
+      }}>
         {isPanelOpen ? '✕' : '☰'}
       </button>
 

@@ -116,6 +116,73 @@ body {
   right: 420px; /* Panel width (400) + 20px padding */
 }
 
+/* 5. DOWNLOAD TIMELAPSE MENU */
+.download-container {
+  position: absolute;
+  top: 20px;
+  right: 475px; /* 420px (panel width) + 45px (toggle width) + 10px spacing */
+  z-index: 1006;
+}
+
+.download-btn {
+  background-color: #1e293b;
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  height: 45px;
+  padding: 0 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+}
+
+.download-btn:hover {
+  background-color: #38bdf8;
+  color: #0f172a;
+}
+
+.download-dropdown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.download-dropdown p {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 5px;
+}
+
+.download-dropdown a {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.download-dropdown a:hover {
+  background: #334155;
+  color: white;
+}
+
 /* Card Styling */
 .stats-grid { display: flex; flex-direction: column; gap: 15px; }
 .stat-card { background: rgba(30, 41, 59, 0.8); padding: 15px; border-radius: 8px; border: 1px solid #334155; text-align: center; }
@@ -124,7 +191,7 @@ body {
 .trend-up { color: #ef4444; }
 .trend-down { color: #22c55e; }
 
-/* 5. FLOATING BOTTOM BAR (Year Slider) */
+/* 6. FLOATING BOTTOM BAR (Year Slider) */
 .floating-bottom-bar {
   position: absolute;
   bottom: 30px;
@@ -153,13 +220,13 @@ body {
   cursor: pointer;
 }
 
-/* 6. PUSH MAP CONTROLS UP */
+/* 7. PUSH MAP CONTROLS UP */
 /* This stops the standard Leaflet map buttons from hiding behind your slider */
 .leaflet-bottom {
   bottom: 100px !important;
 }
 
-/* 7. LOADING SPINNER */
+/* 8. LOADING SPINNER */
 .loader-container {
   display: flex;
   flex-direction: column;
@@ -188,7 +255,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* 8. MAP LEGEND (Locked to Top Left under Header) */
+/* 9. MAP LEGEND (Locked to Top Left under Header) */
 .map-legend {
   position: absolute;
   top: 120px; /* Sits cleanly below the header */
@@ -273,7 +340,12 @@ body {
     right: 20px; 
   }
   
-  /* 3. Shrink the GeoDrishti title slightly so it doesn't bump into the button */
+  /* 3. Move download button to track the toggle on mobile */
+  .download-container {
+    right: 75px; /* 20px (toggle pos) + 45px (toggle width) + 10px spacing */
+  }
+
+  /* 4. Shrink the GeoDrishti title slightly so it doesn't bump into the button */
   .floating-header {
     top: 15px;
     left: 15px;
@@ -289,18 +361,18 @@ body {
     font-size: 11px;
   }
 
-  /* 4. Ensure bottom bar fits nicely on phone */
+  /* 5. Ensure bottom bar fits nicely on phone */
   .floating-bottom-bar {
     bottom: 20px;
     padding: 10px 20px;
   }
 
-  /* 5. Push Leaflet controls a bit higher on mobile */
+  /* 6. Push Leaflet controls a bit higher on mobile */
   .leaflet-bottom {
     bottom: 90px !important;
   }
 
-  /* 6. Mobile Legend Fix: Sit on the left right under header, beneath Side Panel */
+  /* 7. Mobile Legend Fix: Sit on the left right under header, beneath Side Panel */
   .map-legend {
     top: 90px;
     left: 15px;
