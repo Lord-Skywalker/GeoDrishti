@@ -188,12 +188,12 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* 8. MAP LEGEND (Locked to Left Side) */
+/* 8. MAP LEGEND (Locked to Top Left under Header) */
 .map-legend {
   position: absolute;
-  bottom: 140px; 
+  top: 120px; /* Sits cleanly below the header */
   left: 20px;
-  z-index: 1000; /* LAYERED BELOW SIDE PANEL. Panel will hide it on mobile! */
+  z-index: 1000; /* Layered below the side panel */
   background: rgba(15, 23, 42, 0.9);
   padding: 15px;
   border-radius: 8px;
@@ -300,10 +300,10 @@ body {
     bottom: 90px !important;
   }
 
-  /* 6. Mobile Legend Fix: Sit on the left, but cleanly beneath the Side Panel layer */
+  /* 6. Mobile Legend Fix: Sit on the left right under header, beneath Side Panel */
   .map-legend {
-    bottom: 110px;
-    left: 10px;
+    top: 90px;
+    left: 15px;
     width: 180px;
     padding: 10px;
     font-size: 11px;
